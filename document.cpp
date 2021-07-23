@@ -7,7 +7,8 @@ void PrintDocument(const Document& document)
     std::cout << "{ "s
         << "document_id = "s << document.id << ", "s
         << "relevance = "s << document.relevance << ", "s
-        << "rating = "s << document.rating << " }"s ;
+        << "rating = "s << document.rating << " }"s 
+        << std::endl;
 }
 
 void PrintMatchDocumentResult(int document_id, const std::vector<std::string_view>& words, DocumentStatus status)
@@ -36,13 +37,14 @@ void AddDocument(SearchServer& search_server, int document_id, const std::string
     }
 }
 
-void FindTopDocuments(const SearchServer& search_server, const std::string& raw_query) 
+
+void FindTopDocuments(const SearchServer& search_server,  const std::string& raw_query)
 {
     LOG_DURATION_STREAM("Operation time"s, std::cerr);
     std::cout << "Результаты поиска по запросу: "s << raw_query << std::endl;
     try 
     {
-        for (const Document& document : search_server.FindTopDocuments(raw_query)) 
+        for (const Document& document : search_server.FindTopDocuments( raw_query)) 
         {
             PrintDocument(document);
             std::cout << std::endl;

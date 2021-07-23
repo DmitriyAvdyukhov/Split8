@@ -117,7 +117,7 @@ void TestResultFromPredicate() {
     search_server.AddDocument(3, "ухоженный скворец евгений"s, DocumentStatus::BANNED, { 9 });
 
     auto predicate = [](int id, DocumentStatus status, int rating) { return id == 1; };
-    std::vector<Document> documents = search_server.FindTopDocuments("пушистый ухоженный кот"s, predicate);
+    std::vector<Document> documents = search_server.FindTopDocuments(std::execution::seq, "пушистый ухоженный кот"s, predicate);
 
     AssertEqual(documents[0].id, 1, "documents[0] has id = 1");
     AssertEqual(documents.size(), 1, "documents has a size = 1"s);
@@ -131,13 +131,13 @@ void TestSearchDocumentByStatus() {
     search_server.AddDocument(2, "ухоженный пёс выразительные глаза"s, DocumentStatus::ACTUAL, { 5, -12, 2, 1 });
     search_server.AddDocument(3, "ухоженный скворец евгений"s, DocumentStatus::BANNED, { 9 });
 
-    std::vector<Document> documents = search_server.FindTopDocuments("пушистый ухоженный кот"s, DocumentStatus::REMOVED);
+    std::vector<Document> documents = search_server.FindTopDocuments(std::execution::seq, "пушистый ухоженный кот"s, DocumentStatus::REMOVED);
 
     AssertEqual(documents.size(), 1, "documents has a size = 1 with DocumentStatus::REMOVED"s);
     AssertEqual(documents[0].id, 1, "document with DocumentStatus::REMOVED has id = 1");
     Assert(!(documents[0].id == 2), "document with DocumentStatus::REMOVED has no id = 2");
 
-    std::vector<Document> documents1 = search_server.FindTopDocuments("пушистый ухоженный кот"s, DocumentStatus::ACTUAL);
+    std::vector<Document> documents1 = search_server.FindTopDocuments(std::execution::par, "пушистый ухоженный кот"s, DocumentStatus::ACTUAL);
 
     AssertEqual(documents1.size(), 2, "documents has a size = 2 with DocumentStatus::ACTUAL"s);
     Assert((documents1[0].id == 2 && documents1[1].id == 0), "document with DocumentStatus::ACTUAL has  id = 2 and d = 0"s);
